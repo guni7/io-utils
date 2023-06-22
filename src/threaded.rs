@@ -21,7 +21,7 @@
 //!
 //! [wikipedia]: https://en.wikipedia.org/wiki/Multiplexing
 //! [counting]: `crate::counting::CountingIO`
-
+use pollster;
 use crate::imux::IMuxAsync;
 use async_std::{
     channel,
@@ -65,7 +65,7 @@ impl ThreadedReader {
         let senders = Arc::new(Mutex::new(vec![sender]));
         let senders_clone = senders.clone();
         // Start the background reader thread
-        let handle = Arc::new(task::spawn(async {
+        let handle = Arc::new(task::spawn_local(async {
             Self::read_loop(reader, senders_clone).await
         }));
         Self {
@@ -123,7 +123,7 @@ impl Clone for ThreadedReader {
     fn clone(&self) -> Self {
         // Create a new channel and add it to the `senders` vector
         let (sender, receiver) = channel::unbounded();
-        task::block_on(async {
+        pollster::block_on(async {
             let mut senders = self.senders.lock().await;
             senders.push(sender);
         });
@@ -150,7 +150,7 @@ impl Drop for ThreadedReader {
         // If this is the last writer still up, wait for the thread to finish
         match Arc::get_mut(&mut self.handle) {
             Some(h) => {
-                task::block_on(async { h.await });
+                pollster::block_on(async { h.await });
             }
             None => {}
         }

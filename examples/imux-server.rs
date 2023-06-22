@@ -1,6 +1,7 @@
 use ark_std::rand::Rng;
+use ark_std::{start_timer, end_timer, add_to_trace};
 use async_std::{io::BufWriter, net::TcpListener, prelude::*, task};
-use bench_utils::*;
+//use bench_utils::*;
 use clap::{App, Arg, ArgMatches};
 
 extern crate io_utils;

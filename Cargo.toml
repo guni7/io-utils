@@ -5,11 +5,11 @@ authors = ["Ryan Lehmkuhl <ryanleh.ob@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-async-std = "1.9.0"
+async-std = {version = "1.9.0", features= ["unstable"] }
 crossbeam-utils = "0.8.1"
 futures = "0.3.12"
+pollster = "0.3.0"
 
 [dev-dependencies]
 ark-std = { git = "https://github.com/arkworks-rs/utils", default-features = false }
-bench-utils = { git = "https://github.com/arkworks-rs/utils", default-features = false, features = ["print-trace"] }
 clap = "2.33.3"
